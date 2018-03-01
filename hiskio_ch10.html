@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <style type='text/css'>
+        .menuBtn{
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+    <script type="text/babel">
+
+        class MenuItem extends React.Component {
+            render() {
+              return (
+                <li className='menuBtn' style={{color:this.props.color}}>
+                  menuBtn {this.props.level}
+                </li>
+              )
+            };
+        }
+        
+       class MenuList extends React.Component{
+           render() {
+             return (
+               <ul>
+                 <MenuItem level='1' color='red'/>
+                 <MenuItem level='2' color='blue'/>
+                 <MenuItem level='3' color='green'/>
+               </ul>
+             )
+           };
+       }
+    
+       window.addEventListener('load',()=>{
+           ReactDOM.render(<MenuList/>,document.body)
+       })
+        
+    </script>
+</head>
+
+
+<body>
+</body>
+
+</html>

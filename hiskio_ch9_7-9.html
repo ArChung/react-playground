@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+
+</head>
+<script>
+
+    class MyMenuElement extends React.Component {
+        render() {
+            return React.createElement('li', null, 'menu' + this.props.index)
+        }
+    }
+
+    class MyMenuList extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+                menuNum: 5
+            };
+        }
+
+        componentWillMount() {
+            let intervalId = window.setInterval(() => {
+                this.setState((state, props) => {
+                    if (state.menuNum > 6) {
+                        return state
+                    } else {
+                        return {
+                            menuNum: state.menuNum + 1
+                        }
+                    }
+
+                })
+
+            }, 200)
+        }
+
+        render() {
+            let menuBtns = [];
+            let menuBtn;
+
+            for (let i = 1; i < this.state.menuNum; i++) {
+                menuBtn = React.createElement(MyMenuElement, { index: i });
+                menuBtns.push(menuBtn);
+            }
+
+            return React.createElement('ul', null, menuBtns)
+        }
+    }
+
+    window.addEventListener('load', () => {
+        let menu = React.createElement(MyMenuList, null);
+        ReactDOM.render(menu, document.body);
+    })
+
+</script>
+
+<body>
+
+</body>
+
+</html>

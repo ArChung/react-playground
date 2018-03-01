@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
+	<script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+	<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+	<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+	<script type='text/babel'>
+        class MyForm extends React.Component {
+            constructor(props) {
+              super(props)
+            
+              this.state = {
+                 name: '',
+				 gender: 'male',
+				 story: '',
+              };
+            };
+            
+
+            handleNameChange(e){
+                this.setState({name:e.currentTarget.value});
+            }
+
+			handleGenderChange(e){
+                this.setState({gender:e.currentTarget.value});
+            }
+
+			handleStoryChange(e){
+                this.setState({story:e.currentTarget.value});
+            }
+
+			handleSubmit(e){
+				e.preventDefault();
+				console.log(this.state)
+			}
+            render() {
+              return (
+                <form onSubmit={this.handleSubmit.bind(this)}>
+                  Name <input type='text' value={this.state.name} onChange={this.handleNameChange.bind(this)}/>
+                  <br/>
+				  Gander <select value={this.state.gender} onChange={this.handleGenderChange.bind(this)}>
+					<option value='male'>Male</option>
+					<option value='female'>Female</option>
+				  </select>
+				  <br/>
+				  Story <textarea value={this.state.story} onChange={this.handleStoryChange.bind(this)}/>
+				  <br/>
+				  <input type='submit' value='送出'/>
+                </form>
+              )
+            };
+        }
+        
+
+        window.addEventListener('load',()=>{
+            ReactDOM.render(<MyForm/>,document.body)
+        })
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/redux@3.7.2/dist/redux.min.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <title>Document</title>
+    <script type='text/babel'>
+        class MyListItem extends React.Component{
+            
+            
+            render() {
+              return (
+                <li>
+                 {this.props.itemName}
+                </li>
+                )
+              
+            };
+        }
+
+        class MyList extends React.Component{
+            constructor(props) {
+              super(props);
+              this.state = store.getState()
+            };
+
+            componentDidMount() {
+                this.setState(store.getState());
+            }
+
+            updateMenu(){
+                store.dispatch({
+                    type: 'addNewItem',
+                    itemName: 'news'
+                })
+            }
+            
+            render() {
+                let lists=[];
+                for (let i = 0; i < this.state.menuItem.length; i++) {
+                    const element = this.state.menuItem[i];
+                    lists.push(<MyListItem itemName={element}/>)
+                }
+              return (
+                
+                <ul onClick={this.updateMenu.bind(this)}>
+                    {lists}
+                </ul>
+              )
+            };
+
+
+        }
+
+
+        let store;
+        
+
+        function reducer(state, action){
+            switch (action.type) {
+                case "addNewItem":
+                    console.log(typeof(state.menuItem))
+                    console.log(state.menuItem);
+                    
+                    return {menuItem:state.menuItem.concat(action.itemName)};
+                    
+                    
+                default:
+                    return state;
+            }
+        };
+
+
+        window.addEventListener('load',()=>{
+            
+
+            store = Redux.createStore(reducer,{menuItem:['home','conentUs','products']});
+
+            ReactDOM.render(<MyList/>,document.body)
+        })
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Tic-tac-toe game</title>
+	<script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/redux@3.7.2/dist/redux.min.js"></script>
+	<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+	<style type='text/css'>
+		.board {
+			width: 300px;
+			height: 300px;
+			border: 2px solid #000;
+			margin: 50px auto;
+			border-radius: 5px;
+			position: relative;
+
+		}
+
+		.cell {
+			width: 100px;
+			height: 100px;
+			border: 1px solid #000;
+			box-sizing: border-box;
+			float: left;
+			font-size: 50px;
+			line-height: 100px;
+			text-align: center;
+		}
+
+		.cell-0 {
+			color: rgb(255, 81, 81);
+		}
+
+		.cell-1 {
+			color: rgb(60, 112, 255);
+		}
+
+		.line{
+			position: absolute;
+			width: 300px;
+			height: 300px;
+			top: 0;
+			left: 0;
+		}
+	</style>
+	<script type='text/babel'>
+		class Line extends React.Component{
+			render() {
+				/*
+					0  1  2
+					3  4  5 
+					6  7  8
+				*/
+				
+				
+				let x1 = this.props.start%3*100+50;
+				let x2 = this.props.end%3*100+50;
+				let y1 = Math.floor(this.props.start/3)*100+50;
+				let y2 = Math.floor(this.props.end/3)*100+50;
+				
+
+			  return (
+				<svg className="line">
+					<line x1={x1} y1={y1} x2={x2} y2={y2} style={{stroke:'red',strokeWidth:8}} />
+				</svg>
+			  )
+			};
+		}
+		class Cell extends React.Component{
+			onClick(e){
+				this.props.update(this.props.index)
+			}
+
+			render() {
+				let text ='';
+				if(this.props.mark===0){
+					text='O';
+				}else if(this.props.mark===1){
+					text='X';
+				}
+			  return (
+				<div className={'cell '+((this.props.mark>=0)?'cell-'+this.props.mark:'')} onClick={this.onClick.bind(this)}>
+				  {text}
+				</div>
+			  )
+			};
+		}
+		
+		class BoardGame extends React.Component {
+			constructor(props) {
+			  super(props);
+			  this.state = redux.store.getState();
+			};
+
+            componentDidMount() {
+                this.unsubscribe = redux.store.subscribe(this.storeHandler.bind(this));
+            }
+
+            componentWillUnmount() {
+                this.unsubscribe();
+            }
+
+            storeHandler(){
+                this.setState(redux.store.getState());
+            }
+
+			update(index){
+				redux.store.dispatch({
+                    type: 'clickCell',
+                    index: index
+                })
+			}
+
+
+			
+			
+			render() {
+				let cells=[];
+
+				for (let i = 0; i < this.state.marks.length; i++) {
+					cells.push(<Cell index={i} mark={this.state.marks[i]} update={this.update.bind(this)}/>)
+				}
+
+				if(this.state.winner!=null){
+					cells.push(<Line start={this.state.winner.start} end={this.state.winner.end}/>)
+				}
+
+			  return (
+				<div className='board'>
+				  {cells}
+				</div>
+			  )
+			};
+		}
+		
+        let redux ={
+            store: null,
+            reducer: function(state,action){
+                switch (action.type) {
+                    case 'clickCell':
+                        // console.log(action.index);
+                        let index = action.index;
+                        if(state.marks[index]==-1||state.winner!=null){
+                            state.marks[index]=state.round%2;
+                            state.winner=redux.checkGame(state.marks);
+                            return {  
+                                round:state.round+1,
+                                marks:state.marks,
+                                winner:state.winner
+                            }
+                        }else{
+                            return state
+                        }
+                    default:
+                        return state;
+                }
+            },
+            checkGame: function (marks) {
+                let winner=null;
+                /*
+                    0  1  2
+                    3  4  5 
+                    6  7  8
+                */
+                if(marks[0]!=-1&&marks[0]==marks[1]&&marks[1]==marks[2]){
+                    winner={mark:marks[0],start:0,end:2}
+                }
+                if(marks[3]!=-1&&marks[3]==marks[4]&&marks[4]==marks[5]){
+                    winner={mark:marks[3],start:3,end:5}
+                }
+                if(marks[6]!=-1&&marks[6]==marks[7]&&marks[7]==marks[8]){
+                    winner={mark:marks[6],start:6,end:8}
+                }
+
+
+                if(marks[0]!=-1&&marks[0]==marks[3]&&marks[3]==marks[6]){
+                    winner={mark:marks[0],start:0,end:6}
+                }
+                if(marks[1]!=-1&&marks[1]==marks[4]&&marks[4]==marks[7]){
+                    winner={mark:marks[1],start:1,end:7}
+                }
+                if(marks[2]!=-1&&marks[2]==marks[5]&&marks[5]==marks[8]){
+                    winner={mark:marks[2],start:2,end:8}
+                }
+
+
+                if(marks[0]!=-1&&marks[0]==marks[4]&&marks[4]==marks[8]){
+                    winner={mark:marks[0],start:0,end:8}
+                }
+                if(marks[2]!=-1&&marks[2]==marks[4]&&marks[4]==marks[6]){
+                    winner={mark:marks[2],start:2,end:6}
+                }
+
+                return winner
+            }
+
+        }
+
+
+
+
+        window.addEventListener('load',()=>{
+            redux.store = Redux.createStore(redux.reducer,{
+				round:0,
+				marks:[-1,-1,-1,-1,-1,-1,-1,-1,-1],
+				winner:null
+			  });
+			ReactDOM.render(<BoardGame/>,document.body)
+		})
+    </script>
+</head>
+
+<body>
+
+</body>
+
+</html>
